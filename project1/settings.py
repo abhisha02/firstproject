@@ -140,3 +140,16 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+  
+}
+
+ACCOUNT_SID='ACb8ab514f2274098e09869d227b049af0'
+AUTH_TOKEN='523ac474bc1c466699cfc4bbd40942eb'
+COUNTRY_CODE='+91'
+
+TWILIO_PHONE_NUMBER='+12242054249'
