@@ -1,0 +1,207 @@
+{% extends 'admin/base_admin.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+	/* You can adjust the width and height values as needed */
+	.small-rounded-image {
+			width: 80px;
+			height: 80px;
+			border-radius: 50%;
+			
+	}
+	.list1-group-item {
+    display: flex;
+    justify-content: center; /* horizontally center */
+    align-items: center; /* vertically center */
+  }
+	
+</style>
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+	<div class="container" style="height:2000px">
+			<div class="row">
+
+					<aside class="col-md-2" style="height:400px;">
+							<!-- SIDEBAR -->
+							<ul class="list-group" style="list-style-type: none; ">
+									<p class="title mb-0 " style="font-weight: bold;"> {{ user.first_name|capfirst}} </p>
+									<a href="{{user.get_url}}" class="img-wrap rounded-circle account-img small-rounded-image"> <img
+													src="{{ user.profile_pic.url}}" style="border-radius: 50%;"> </a>
+									<br>
+									<br>
+									<li><label class="list-group-item text-center bg-info list1-group-item" style="height:70px;">Dashboard</label></li>
+									<li><a class="list-group-item list1-group-item" style="height:70px;" href="{% url 'category_list'%}"> Categories </a></li>
+									<li><a class="list-group-item list1-group-item" style="height:70px;" href="{% url 'product_list'%}"> Products </a></li>
+									<li><a class="list-group-item list1-group-item" style="height:70px;" href="{% url 'variant_list'%}"> Variants </a></li>
+									<li><a class="list-group-item list1-group-item" style="height:70px;" href="{% url 'order_list_admin'%}"> Orders </a></li>
+									<li><a class="list-group-item list1-group-item" style="height:70px;" href="{% url 'users_list'%}"> Users </a></li>
+									<li><a class="list-group-item list1-group-item"  style="height:70px;" href="{% url 'sales_report' %}"> Sales Report </a></li>
+									<li><a class="list-group-item list1-group-item" style="height:70px;" href="{% url 'dashboard'%}"> Profile </a></li>
+									<li><a class="list-group-item list1-group-item" style="height:70px;" href="{% url 'admin_coupon_list'%}"> Coupon List </a></li>
+									<li><a class="list-group-item list1-group-item" style="height:70px;" href="{% url 'admin_product_offer_list'%}"> Product Offer List </a></li>
+									<li><a class="btn btn-light btn-block list1-group-item"  style="height:70px;" href="{% url 'logout'%}"> <i class="fa fa-power-off"></i>
+													<span class="text">Log out</span> </a></li>
+							</ul>
+							<!-- SIDEBAR .//END -->
+							
+				
+								
+							
+		
+					</aside>
+       
+						
+					<div style=" width:800px; height: 400px; position: absolute; top: 160px; left: 430px; z-index: 2;">
+						
+						<div>
+							<select id="timeRange" onchange="updateChart()">
+									<option value="month">Monthly</option>
+									<option value="week">Weekly</option>
+									<option value="year">Yearly</option>
+							</select>
+							<canvas id="myChart"></canvas>
+							<center><h4 id="chartTitle">Sales Chart</h4></center>
+					</div>
+					
+					<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+					
+					<script>
+							let myChart; // Define the chart variable outside the function scope
+					
+							function updateChart() {
+									const ctx = document.getElementById('myChart');
+									const timeRange = document.getElementById('timeRange').value;
+									const chartTitle = document.getElementById('chartTitle');
+					
+									let labels = [];
+									let amounts = [];
+					
+									if (timeRange === 'month') {
+											labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+											amounts = [{{ amount1 }}, {{ amount2 }}, {{ amount3 }}, {{ amount4 }}];
+											chartTitle.innerText = 'Last One Month Chart';
+									} else if (timeRange === 'week') {
+											labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
+											amounts = [{{amountd1}}, {{amountd2}}, {{amountd3}}, {{amountd4}}, {{amountd5}}, {{amountd6}}, {{amountd7}}];
+											chartTitle.innerText = 'Last One Week Chart';
+									} else if (timeRange === 'year') {
+											labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+											amounts = [0,{{amountfeb}},0,0,0,0,0,0,0,0,0,0];
+											chartTitle.innerText = 'Yearly Chart';
+									}
+					
+									// Destroy the existing chart if it exists
+									if (myChart) {
+											myChart.destroy();
+									}
+					
+									// Create a new chart
+									myChart = new Chart(ctx, {
+											type: 'bar',
+											data: {
+													labels: labels,
+													datasets: [{
+															label: '# order amount',
+															data: amounts,
+															backgroundColor: [ // Define darker colors here
+																	'rgba(100, 50, 50, 0.5)', // Dark Red
+																	'rgba(50, 100, 150, 0.5)', // Dark Blue
+																	'rgba(150, 120, 0, 0.5)', // Dark Yellow
+																	'rgba(0, 100, 0, 0.5)', // Dark Green
+																	'rgba(100, 50, 100, 0.5)', // Dark Purple
+																	'rgba(150, 100, 0, 0.5)' // Dark Orange
+															],
+															borderWidth: 1
+													}]
+											},
+											options: {
+													scales: {
+															y: {
+																	beginAtZero: true
+															}
+													}
+											}
+									});
+							}
+					
+							// Call updateChart initially to render the chart for the last one month
+							updateChart();
+					</script>
+					
+					
+				</div>	
+				
+
+		<!-- End of new columns -->
+		<div class="box" style="background-color: red;width:300px;height:1300px;margin-top: 70px; margin-left:0px; margin-top:500px;">
+			<p style="color:white; font-weight: bold; font-size:20px; larger; text-align: center;">Best Selling Products</p>
+		
+			<div class="row">
+				{% for product in products_with_more_orders %}
+				<div class="col-md-12">
+						<div class="item">
+							
+							<span class="serial-number" style="color:white;">{{ forloop.counter }}</span>
+								<a href="{{ product.get_url }}" class="img-wrap">
+										<img src="{{ product.image.url }}" style="width:50px; height:50px;">
+								</a>
+								<figcaption class="info-wrap">
+										<center><a href="{{ product.get_url }}" class="title"style="color:white;">{{ product.product_name }}</a>
+												<div class="price mt-1" style="color:white;"> ₹ {{ product.price }}</div>
+										</center><!-- price-wrap.// -->
+								</figcaption>
+						</div>
+				</div> <!-- col.// -->
+				<br>
+				{% endfor %}
+	
+			</div>
+		</div>
+		
+		<div class="col-md-2">
+			<!-- Your content for the third box goes here -->
+			<div class="box" style="background-color: purple;width:300px;height:1300px;margin-top: 500px; margin-left: 20px;">
+		
+				<p style="color:white; font-weight: bold; font-size:20px; larger; text-align: center;"> Best Brands</p>
+				{% for brand in brands_with_most_orders %}
+				<span class="serial-number" style="color:white;">{{ forloop.counter }}</span>
+				<center><p style="color:white;">{{brand.brand_name}}</p>
+					<img src="{{ brand.brand_image.url }}" style="width:50px; height:50px;">	
+			</center>
+				<br>
+				{% endfor %}
+			
+			</div>
+		 </div>
+		 <div class="col-md-2">
+			<!-- Your content for the second box goes here -->
+			<div class="box" style="background-color: green;width:300px;height:1300px;margin-top:500px; margin-left: 150px;">
+				<p style="color:white; font-weight: bold; font-size:20px; larger; text-align: center;"> Best Selling Categories</p>
+				{% for category in categories_with_most_orders %}
+				<span class="serial-number" style="color:white;">{{ forloop.counter }}</span>
+				<center><p style="color:white;">{{category.category_name}}</p>
+					<img src="{{ category.cat_image.url }}" style="width:50px; height:50px;">	
+			</center>
+				<br>
+				{% endfor %}
+			
+			</div>
+		</div>
+
+
+	
+
+					
+		
+
+			</div> <!-- row.// -->
+			
+	</div>
+
+
+</section>
+
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}

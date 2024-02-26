@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}
+PayPal Payment
+{% endblock title %}
+
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+{% block page_title %}
+PayPal Payment
+{% endblock page_title %}
+
+{% block content %}
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+    <!-- ============================ COMPONENT REGISTER   ================================= -->
+    <div class="card mx-auto" style="max-width:520px; margin-top:30px;">
+        <article class="card-body">
+            {% include 'includes/alerts.html' %}
+            <header class="mb-4 bg-info text-white"><h4 class="card-title text-center">PayPal Payment Gateway</h4></header>
+            <div class="product-container">
+                <div class="row justify-content-center">
+                    <div class="products">
+                        <p>Price: Rs. {{ order.order_total }}</p>
+                        <!-- <button>Purchase</button> -->
+                        <a href="{% url 'paypal_return' order_id=order.id%}" style="border:none; background:none; padding:0; margin:0; cursor:pointer;">
+                          <img src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" border="0" alt="PayPal - The safer, easier way to pay online!">
+                      </a>
+                    </div>
+                </div>
+
+            </div>
+        </article><!-- card-body.// -->
+    </div> <!-- card .// -->
+    <!-- ============================ COMPONENT REGISTER  END.// ================================= -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+{% endblock %}
+
+{% block custom_js %}
+{% endblock custom_js %}

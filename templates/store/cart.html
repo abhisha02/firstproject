@@ -6,6 +6,7 @@
   <div class="container">
   
   <!-- ============================ COMPONENT 1 ================================= -->
+  {% include 'includes/alerts.html'%}
   {% if not cart_items%}
   <h2 class="text-center"> Your Shopping Cart is empty </h2>
   <br>
@@ -40,37 +41,51 @@
             
              {% endfor %}
             {% endif %}
-
+           
           </p>
         </figcaption>
       </figure>
     </td>
     <td> 
       <!-- col.// -->
-            <div class="col"> 
-              <div class="input-group input-spinner">
+            <div class="col">            
+              <div class="input-group input-spinner product_data">
+                <input type="hidden" class="prod_id" value="{{cart_item.product.id}}">
+                <input type="hidden" class="cart_item_id" value="{{cart_item.id}}">
+                        
+                          
+                {% csrf_token %} 
                 <div class="input-group-prepend">
-                <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}"class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a>
+                    <!-- <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}"class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a> 
+                      <form action="{% url 'add_cart' cart_item.product.id %}" method="POST">-->
+                    <button class="btn btn-light changequantity decrement-btn" type="button" id="button-plus"> <i class="fa fa-minus"></i> </button>
                 </div>
-                <input type="text" class="form-control"  value="{{ cart_item.quantity}}">
+                <input type="text" class="form-control qty-input"  value="{{ cart_item.quantity}}">
                 <div class="input-group-append">
-                  <form action="{% url 'add_cart' cart_item.product.id %}" method="POST">
-                    {% csrf_token%}
-                    {% for item in cart_item.variations.all %}
-                       <input type="hidden" name="{{item.variation_category |lower}}" value="{{ item.variation_value |capfirst}}">
-                     {% endfor %}
-                     <button class="btn btn-light" type="submit" id="button-minus"> <i class="fa fa-plus"></i> </button>
-                  </form>
+                  <button class="btn btn-light changequantity increment-btn" type="button" id="button-minus"> <i class="fa fa-plus"></i> </button>
+                
                 </div>
               </div> <!-- input-group.// -->
+              
             </div> <!-- col.// -->
     </td>
-    <td> 
-      <div class="price-wrap"> 
-        <var class="price">₹{{cart_item.sub_total}}</var> 
-        <small class="text-muted"> ₹{{cart_item.product.price}} each </small> 
-      </div> <!-- price-wrap .// -->
-    </td>
+    <td>
+      {% if cart_item.product.offer_percentage > 0 %}
+          <div class="price-wrap">
+              <var class="price">Rs. {{ cart_item.sub_total_offer }} </var>
+              <small class="badge bg-danger text-white h2 py-2">{{ cart_item.product.offer_percentage }}% off</small>
+              <br>
+              <small class="text-muted"> Rs. {{ cart_item.product.offer_price }} each </small>
+              <br>
+              <small class="text-muted">M.R.P.: Rs. <del>{{ cart_item.product.price }}</del></small>
+          </div> <!-- price-wrap .// -->
+      {% else %}
+          <div class="price-wrap">
+              <var class="price">Rs. {{ cart_item.sub_total }} </var>
+              <small class="text-muted"> Rs. {{ cart_item.product.price }} each </small>
+          </div> <!-- price-wrap .// -->
+      {% endif %}
+  </td>
     <td class="text-right"> 
     <a href="{% url 'remove_cart_item' cart_item.product.id  cart_item.id %}" onclick=" return confirm('Are you sure you want to delete this item')"class="btn btn-danger"> Remove</a>
     </td>
@@ -84,24 +99,32 @@
     <aside class="col-lg-3">
   
       <div class="card">
-      <div class="card-body">
+      <div class="card-body product_data">
         <dl class="dlist-align">
           <dt>Total price:</dt>
-          <dd class="text-right">₹ {{total}}</dd>
+          <dd class="text-right tot ">₹ {{total}}</dd>
         </dl>
         <dl class="dlist-align">
           <dt>Tax:</dt>
           <dd class="text-right"> ₹{{tax}}</dd>
         </dl>
         <dl class="dlist-align">
+          <dt>Delivery Charge:</dt>
+          <dd class="text-right"> ₹{{delivery_charge}}</dd>
+        </dl>
+        <dl class="dlist-align">
           <dt>Grand Total:</dt>
           <dd class="text-right text-dark b"><strong>₹{{grand_total}}</strong></dd>
         </dl>
+        {% if total_discount > 0 %}
+                            <hr>
+                        <p class="text-center mb-3 ">You have saved! <strong>Rs. {{ total_discount | floatformat:2 }}</strong></p>
+                        {% endif %}
         <hr>
         <p class="text-center mb-3">
           <img src="{% static './images/misc/payments.png'%}" height="26">
         </p>
-        <a href="./place-order.html" class="btn btn-primary btn-block"> Checkout </a>
+        <a href="{% url 'checkout'%}" class="btn btn-primary btn-block"> Checkout </a>
         <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
       </div> <!-- card-body.// -->
       </div> <!-- card.// -->
@@ -116,4 +139,96 @@
   </div> <!-- container .//  -->
   </section>
   <!-- ========================= SECTION CONTENT END// ========================= -->
+  <script>
+    $(document).ready(function(){
+      $('.increment-btn').click(function(e){
+        e.preventDefault();
+        var inc_value= $(this).closest('.product_data').find('.qty-input').val();
+        var value=parseInt(inc_value,10);
+        value=isNaN(value)? 0: value;
+        if(value < 10)
+        {
+         value++;
+         $(this).closest('.product_data').find('.qty-input').val(value);
+        }
+
+      });
+
+    });
+
+    $(document).ready(function(){
+      $('.decrement-btn').click(function(e){
+        e.preventDefault();
+        console.log('dec')
+        var dec_value= $(this).closest('.product_data').find('.qty-input').val();
+        var value=parseInt(dec_value,10);
+        value=isNaN(value)? 0: value;
+        if(value > 1)
+        {
+         value--;
+         $(this).closest('.product_data').find('.qty-input').val(value);
+        }
+
+      });
+
+    });
+
+    $('.changequantity').click(function(e){
+
+      e.preventDefault();
+      var product_id = $(this).closest('.product_data').find('.prod_id').val();
+      product_id=String(product_id);
+      var cartitem_id = $(this).closest('.product_data').find('.cart_item_id').val();
+      cartitem_id=String(cartitem_id);
+      
+
+      console.log("Product ID:", product_id);
+      console.log("Cart ID:", cartitem_id);
+
+      var product_qty = $(this).closest('.product_data').find('.qty-input').val();
+      product_qty=String(product_qty);
+      console.log("Product quantity:", product_qty);
+
+      var token =$('input[name=csrfmiddlewaretoken]').val();
+      
+      console.log("token:",  token);
+      var updateUrl = "{% url 'update' %}";
+      console.log("url:",  updateUrl);
+
+      
+      try {
+            $.ajax({
+              type:"POST",
+              url: "update/",
+              data:{
+                'product_id':product_id,
+                'product_qty':product_qty,
+                'cartitem_id':cartitem_id,
+                'csrfmiddlewaretoken':'{{csrf_token}}',
+          },
+          
+          dataType:"xml",
+       
+          success:function(response){
+            
+            $('.tot').text('₹' + response['total']);
+            console.log("res:");
+            console.log("Total:", response.total);
+            document.open();
+            document.write(response);
+            document.close();
+          },
+          error: function(xhr, status, error){
+            console.log(error)
+         },
+        
+        });
+         } catch(e) {
+          console.log("cache");
+       
+         }
+
+          
+    });
+  </script>
 {% endblock %}

@@ -7,6 +7,7 @@ class Category(models.Model):
   slug=models.SlugField(max_length=100,unique=True)
   description=models.TextField(max_length=255,blank=True)
   cat_image=models.ImageField(upload_to='photos/categories/',blank=True)
+  is_available=models.BooleanField(default=True)
 
   class Meta:
     verbose_name='category'
@@ -19,3 +20,18 @@ class Category(models.Model):
 
   def __str__(self):
     return self.category_name
+  
+class Brand(models.Model):
+  brand_name=models.CharField(max_length=50)
+  slug=models.SlugField(max_length=100,unique=True)
+  description=models.TextField(max_length=255,blank=True)
+  brand_image=models.ImageField(upload_to='photos/brand/',blank=True)
+  is_available=models.BooleanField(default=True)
+
+ 
+  def get_url(self):
+   return reverse('products_by_brand',args=[self.slug])
+
+
+  def __str__(self):
+    return self.brand_name

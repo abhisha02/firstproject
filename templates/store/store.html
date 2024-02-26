@@ -3,7 +3,46 @@
 
 
 {% block content%}
+<style>
+  .checkbox-color {
+    display: block;
+    margin-bottom: 5px;
+}
 
+.color-box {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.checkbox-color input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-color input[type="checkbox"] + .color-box::after {
+    content: "";
+    display: none;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    position: absolute;
+    border: 1px solid #ccc;
+    top: 5px;
+    left: 5px;
+}
+
+.checkbox-color input[type="checkbox"]:checked + .color-box::after {
+    display: block;
+}
+
+.checkbox-color input[type="checkbox"]:checked + .color-box::after {
+    background-color: #000;
+}
+
+</style>
 
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop bg">
@@ -48,32 +87,44 @@
       <header class="card-header">
         <a href="#" data-toggle="collapse" data-target="#collapse_4" aria-expanded="true" class="">
           <i class="icon-control fa fa-chevron-down"></i>
-          <h6 class="title">Sizes </h6>
+          <h6 class="title">Color </h6>
         </a>
       </header>
-      <div class="filter-content collapse show" id="collapse_4" style="">
+      <form action="{% url 'color_filter' %}" method="GET">
         <div class="card-body">
-          <label class="checkbox-btn">
-            <input type="checkbox">
-            <span class="btn btn-light"> XS </span>
+            <label class="checkbox-color">
+                <input type="checkbox" name="color" value="green">
+                <span class="color-box" style="background-color: green;"></span> Green
+            </label>
+            <label class="checkbox-color">
+                <input type="checkbox" name="color" value="blue">
+                <span class="color-box" style="background-color: blue;"></span> Blue
+            </label>
+            <label class="checkbox-color">
+                <input type="checkbox" name="color" value="Red">
+                <span class="color-box" style="background-color: red;"></span> Red
+            </label>
+            <label class="checkbox-color">
+                <input type="checkbox" name="color" value="pale yellow">
+                <span class="color-box" style="background-color: #ffffbf;"></span> Pale Yellow
+            </label>
+            <label class="checkbox-color">
+                <input type="checkbox" name="color" value="peacock-green">
+                <span class="color-box" style="background-color: #57A845;"></span> Peacock Green
+            </label>
+            <label class="checkbox-color">
+              <input type="checkbox" name="color" value="black">
+              <span class="color-box" style="background-color:black;"></span>Black
           </label>
-  
-          <label class="checkbox-btn">
-            <input type="checkbox">
-            <span class="btn btn-light"> SM </span>
-          </label>
-  
-          <label class="checkbox-btn">
-            <input type="checkbox">
-            <span class="btn btn-light"> LG </span>
-          </label>
-  
-          <label class="checkbox-btn">
-            <input type="checkbox">
-            <span class="btn btn-light"> XXL </span>
-          </label>
-      </div><!-- card-body.// -->
-      </div>
+          <label class="checkbox-color">
+            <input type="checkbox" name="color" value="white">
+            <span class="color-box" style="background-color:white;"></span>White
+        </label>
+        </div><!-- card-body.// -->
+        <button type="submit" class="btn btn-block btn-primary">Apply</button>
+    </form>
+    
+    
     </article> <!-- filter-group .// -->
     
     <article class="filter-group">
@@ -86,36 +137,47 @@
       <div class="filter-content collapse show" id="collapse_3" style="">
         <div class="card-body">
           
-          <div class="form-row">
-          <div class="form-group col-md-6">
-            <label>Min</label>
-            <!-- <input class="form-control" placeholder="$0" type="number"> -->
-              <select class="mr-2 form-control">
-              <option value="0">$0</option>
-              <option value="50">$50</option>
-              <option value="100">$100</option>
-              <option value="150">$150</option>
-              <option value="200">$200</option>
-              <option value="500">$500</option>
-              <option value="1000">$1000</option>
-            </select>
-          </div>
-          <div class="form-group text-right col-md-6">
-            <label>Max</label>
-              <select class="mr-2 form-control">
-              <option value="50">$50</option>
-              <option value="100">$100</option>
-              <option value="150">$150</option>
-              <option value="200">$200</option>
-              <option value="500">$500</option>
-              <option value="1000">$1000</option>
-              <option value="2000">$2000+</option>
-            </select>
-          </div>
-          </div> <!-- form-row.// -->
-          <button class="btn btn-block btn-primary">Apply</button>
-        </div><!-- card-body.// -->
-      </div>
+          <form action="{% url ' filter_products'%}" method="GET">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label>Min</label>
+                <select name="min_price" class="mr-2 form-control">
+                  {% if not min_price %}
+                  <option value="" >Any</option>
+                  {% else %}
+                  <option value="" >{{min_price}}</option>
+                  {% endif %}
+
+                  <option value="0">₹0</option>
+                  <option value="500">₹500</option>
+                  <option value="1000">₹1000</option>
+                  <option value="1500">₹1500</option>
+                  <option value="2000">₹2000</option>
+                  <option value="3000">₹3000</option>
+                  <option value="5000">₹5000</option>
+                </select>
+              </div>
+              <div class="form-group text-right col-md-6">
+                <label>Max</label>
+                <select name="max_price" class="mr-2 form-control">
+                  {% if not max_price %}
+                  <option value="" >Any</option>
+                  {% else %}
+                  <option value="" >{{max_price}}</option>
+                  {% endif %}
+                  <option value="500">₹500</option>
+                  <option value="1000">₹1000</option>
+                  <option value="1500">₹1500</option>
+                  <option value="2000">₹2000</option>
+                  <option value="3000">₹3000</option>
+                  <option value="3500">₹3500</option>
+                  <option value="6000">₹6000+</option>
+                </select>
+              </div>
+            </div> <!-- form-row.// -->
+            <button type="submit" class="btn btn-block btn-primary">Apply</button>
+          </form>
+          
     </article> <!-- filter-group .// -->
     
   </div> <!-- card.// -->

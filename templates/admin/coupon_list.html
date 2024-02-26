@@ -1,0 +1,110 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}
+Users List
+{% endblock title %}
+
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+{% block page_title %}
+Users List
+{% endblock page_title %}
+
+{% block content %}
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+    <div class="container">
+        <div class="row">
+            
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{% url 'coupon_add' %}" class="btn btn-success"> Add New Coupon <i
+                                class="fas fa-chevron"></i></a>
+                    </div>
+                </div>
+         
+          <aside class="col-md-2">
+            <!--   SIDEBAR   -->
+            <ul class="list-group" style="list-style-type: none;">
+                <li><label class="list-group-item text-center bg-info">Dashboard</label></li>
+                <li><a class="list-group-item" href="{% url 'category_list'%}"> Categories </a></li>
+                <li><a class="list-group-item" href="{% url 'product_list'%}"> Products </a></li>
+                <li><a class="list-group-item" href="{% url 'variant_list' %}"> Variants </a></li>
+                <li><a class="list-group-item" href="{% url 'order_list_admin'%}"> Orders </a></li>
+                <li><a class="list-group-item" href="{% url 'users_list' %}"> Users </a></li>
+                <li><a class="list-group-item" href="{% url 'sales_report' %}"> Sales Report </a></li>
+                <li><a class="list-group-item" href="{% url 'dashboard'%}"> Profile </a></li>
+                <li><a class="list-group-item " href="{% url 'admin_coupon_list'%}"> Coupon List </a></li>
+                <li><a class="list-group-item "  href="{% url 'admin_product_offer_list'%}"> Product Offer List </a></li>
+                <li><a class="btn btn-light btn-block" href="{% url 'logout_admin' %}"> <i
+                        class="fa fa-power-off"></i> <span
+                        class="text">Log out</span> </a></li>
+            </ul>
+            <!--   SIDEBAR .//END   -->
+        </aside>
+        <main class="col-md-9">
+            <article class="card">
+                <header class="card-header">
+                    <center><strong class="d-inline-block mr-3" style="font-size:25px;">Coupon Details</strong></center>
+                </header>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Coupon Code</th>
+                                        <th scope="col">Min. Purchase Amount</th>
+                                        <th scope="col">Discount Amount</th>
+                                        <th scope="col">Valid Till</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for coupon in coupons %}
+                                    <tr>
+                                        <td>{{ coupon.coupon_code }}</td>
+                                        <td>{{ coupon.minimum_amount }}</td>
+                                        <td>{{ coupon.discount }}</td>
+                                        <td>{{ coupon.valid_to }}</td>
+                                        <td>{% if coupon.is_active %}
+                                            Active
+                                            {% else %}
+                                            {{ coupon.user.first_name }}   
+                                        {% endif %}</td>
+                                        <td class="text-center">
+                                            {% if coupon.is_active %}
+                                            <a href="{% url 'coupon_edit' coupon.id %}" class="btn btn-info"> Edit <i
+                                                    class="fas fa-chevron"></i></a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if coupon.is_active %}
+                                            <a href="{% url 'coupon_delete' coupon.id %}" class="btn btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this Category?')">Delete <i
+                                                    class="fas fa-chevron"></i></a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                
+                            </table>
+                        </div>
+                    </div> <!-- row.// -->
+                </div> <!-- card-body .// -->
+            </article> <!-- order-group.// -->
+        </main>
+        </div> <!-- row.// -->
+    </div>
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+{% endblock%}
+
+
+{% block custom_js %}
+{% endblock custom_js %}
