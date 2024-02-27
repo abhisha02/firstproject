@@ -63,6 +63,7 @@ class Account(AbstractBaseUser):
   phone_number=models.CharField(max_length=50,blank=True)
   profile_pic=models.ImageField(upload_to='photos/products',blank=True,default='default.jpg')
   wallet=models.FloatField(null=True,default=0.0)
+  username = models.CharField(max_length=100,blank=True)
   
   #required
   date_joined=models.DateTimeField(auto_now_add=True)
