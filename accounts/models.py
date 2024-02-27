@@ -22,13 +22,13 @@ class MyAccountManager(BaseUserManager):
     user.save(using=self._db)
     return user
 
-  def create_superuser(self,first_name,last_name,email,username,password):
+  def create_superuser(self,first_name,last_name,email,phone_number,password):
    user=self.create_user(
     email=self.normalize_email(email),
-    username=username,
     password=password,
     first_name=first_name,
     last_name=last_name,
+    phone_number=phone_number,
   )
 
    user.is_admin=True
@@ -38,30 +38,29 @@ class MyAccountManager(BaseUserManager):
    user.save(using=self._db)
    return user
 
-class UserAccountManager(BaseUserManager):
-    def create_user_account(self, first_name,last_name, email, phone_number, password=None):
-        if not email:
-            raise ValueError('User must have an email address')
-        if not phone_number:
-            raise ValueError('User must have a phone number')
+# class UserAccountManager(BaseUserManager):
+#     def create_user_account(self, first_name,last_name, email, phone_number, password=None):
+#         if not email:
+#             raise ValueError('User must have an email address')
+#         if not phone_number:
+#             raise ValueError('User must have a phone number')
 
-        user = self.model(
-            email = self.normalize_email(email),
-            first_name = first_name,
-            last_name=last_name,
+#         user = self.model(
+#             email = self.normalize_email(email),
+#             first_name = first_name,
+#             last_name=last_name,
 
-            phone_number = phone_number
-        )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+#             phone_number = phone_number
+#         )
+#         user.set_password(password)
+#         user.save(using=self._db)
+#         return user
     
 class Account(AbstractBaseUser):
   first_name = models.CharField(max_length=50)
   last_name = models.CharField(max_length=50)
-  username = models.CharField(max_length=50)
   email=models.EmailField(max_length=100,unique=True)
-  phone_number=models.CharField(max_length=50)
+  phone_number=models.CharField(max_length=50,blank=True)
   profile_pic=models.ImageField(upload_to='photos/products',blank=True,default='default.jpg')
   wallet=models.FloatField(null=True,default=0.0)
   
@@ -91,30 +90,30 @@ class Account(AbstractBaseUser):
         ordering = ['-date_joined']
   
 
-class AccountUser(AbstractBaseUser):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+# class AccountUser(AbstractBaseUser):
+#     first_name = models.CharField(max_length=50)
+#     last_name = models.CharField(max_length=50)
    
-    email=models.EmailField(max_length=100,unique=True)
-    phone_number=models.CharField(max_length=50)
-    session = models.CharField(max_length=255, blank=True, null=True)
+#     email=models.EmailField(max_length=100,unique=True)
+#     phone_number=models.CharField(max_length=50)
+#     session = models.CharField(max_length=255, blank=True, null=True)
 
-    #Required
-    date_joined = models.DateTimeField(auto_now_add=True)
-    last_login = models.DateTimeField(auto_now_add=True)
-    is_active = models.BooleanField(default=True)
+#     #Required
+#     date_joined = models.DateTimeField(auto_now_add=True)
+#     last_login = models.DateTimeField(auto_now_add=True)
+#     is_active = models.BooleanField(default=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number', 'password']
+#     USERNAME_FIELD = 'email'
+#     REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number', 'password']
 
-    objects = UserAccountManager()
+#     objects = UserAccountManager()
 
-    class Meta:
-        verbose_name = 'user account'
-        verbose_name_plural = 'user accounts'
+#     class Meta:
+#         verbose_name = 'user account'
+#         verbose_name_plural = 'user accounts'
 
-    def __str__(self):
-        return self.first_name
+#     def __str__(self):
+#         return self.first_name
 
 
 class Profile(models.Model):
