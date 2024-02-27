@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,9 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ra&y8yjkdfm4kj_60@eb^va-@soy&3r6sm_%%xz=i0voknrgop'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+ENVIRONMENT = os.environ.get('DJANGO_ENV', 'development')
+if ENVIRONMENT == 'development':
+    DEBUG = True # This block will be executed
+else:
+    DEBUG = False
+
+ALLOWED_HOSTS = ['abhishasreenath.shop', '13.233.103.185','localhost','127.0.0.1']
 
 
 # Application definition
@@ -82,13 +88,28 @@ AUTH_USER_MODEL='accounts.Account'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-DATABASES = {
+if ENVIRONMENT == 'development':
+   DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+else:
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'hostproject',
+        'USER': 'hostprojectuser',
+        'PASSWORD': 'Ec0610400_2',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
+    
+
+
+
 
 
 # Password validation
