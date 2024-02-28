@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ra&y8yjkdfm4kj_60@eb^va-@soy&3r6sm_%%xz=i0voknrgop
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ENVIRONMENT = os.environ.get('DJANGO_ENV', 'development')
+ENVIRONMENT = os.environ.get('DJANGO_ENV', 'production')
 if ENVIRONMENT == 'development':
     DEBUG = True # This block will be executed
 else:
@@ -85,27 +85,32 @@ WSGI_APPLICATION = 'project1.wsgi.application'
 
 AUTH_USER_MODEL='accounts.Account'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-if ENVIRONMENT == 'development':
-   DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-else:
-    DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hostproject',
-        'USER': 'hostprojectuser',
-        'PASSWORD': 'Ec0610400_2',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
-}
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+# if ENVIRONMENT == 'development':
+#    DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+# else:
+#     DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'hostproject',
+#         'USER': 'hostprojectuser',
+#         'PASSWORD': 'Ec0610400_2',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
     
 
 
@@ -145,13 +150,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
-STATICFILES_DIRS=[
-  'project1/static',
-  
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Include any additional directories for static files
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Define a different directory for collected static files
+
+
 
 
 #media file configuration
